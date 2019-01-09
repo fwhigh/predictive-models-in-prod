@@ -2,8 +2,10 @@
 
 set -e
 
+RUNID=`date +%Y%m%d`
 DATA_DIR=data/${RUNID}
 BUCKET="s3://predictive-models"
+S3_DATA_DIR=${BUCKET}/${RUNID}
 
 mkdir -p DATA_DIR
 
@@ -21,5 +23,5 @@ jupyter nbconvert --to html ${DATA_DIR}/model-training-${RUNID}.ipynb
 
 # Push any assets to the cloud
 if [ "$ENVIRONMENT" == "staging" ]; then
-    aws s3 cp --exclude * --include *.ipynb *.html *.pkl ${DATA_DIR} ${BUCKET}/staging/
+    aws s3 cp --exclude * --include *.ipynb *.html *.pkl ${DATA_DIR}/ S3_DATA_DIR/
 fi
