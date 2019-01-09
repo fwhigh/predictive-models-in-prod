@@ -1,0 +1,8 @@
+gunicorn
+pandas
+numpy
+xgboost
+sklearn
+nltk
+jupyter
+papermill

@@ -1,0 +1,24 @@
+FROM python:3
+
+ARG GITHUB_PERSONAL_ACCESS_TOKEN
+ARG AWS_ACCESS_KEY_ID
+ARG AWS_SECRET_ACCESS_KEY
+ARG ENVIRONMENT=prod
+
+RUN apt-get update
+RUN apt-get install -y zip
+
+WORKDIR /usr/src/app
+
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+RUN ENVIRONMENT=$ENVIRONMENT bash scripts/install.sh
+
+RUN bash scripts/get_glove.sh
+
+EXPOSE 8888
+ENTRYPOINT [ "bash" ]
+CMD [ "-c", "jupyter notebook notebooks/ --allow-root --ip=0.0.0.0 --port=8888 --no-browser" ]
