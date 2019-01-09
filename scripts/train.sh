@@ -25,5 +25,6 @@ jupyter nbconvert --to html $DIR/model-training-$MODEL_ID.ipynb
 # Push any assets to the cloud
 if [ "$ENVIRONMENT" == "staging" ]; then
     echo Pushing model to S3
-    aws s3 cp --recursive --exclude "*" --include "*.ipynb" --include "*.html" --include "*.pkl" $DIR/ $S3_DIR/
+    aws s3 cp $DIR/ $S3_DIR/ \
+         --recursive --exclude "*" --include "*.ipynb" --include "*.html" --include "*.pkl"
 fi
