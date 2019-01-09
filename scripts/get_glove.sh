@@ -6,4 +6,4 @@ if [ ! -f "data/glove/glove.840B.300d.txt" ]; then
     mv glove.840B.300d.zip data/glove
     unzip data/glove/glove.840B.300d.zip -d data/glove
     rm data/glove/glove.840B.300d.zip
-figo
+fi

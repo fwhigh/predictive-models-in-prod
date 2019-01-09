@@ -1,5 +1,7 @@
 .idea
 data
+batch_create_compute_env.json
+*~
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

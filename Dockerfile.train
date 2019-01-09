@@ -17,8 +17,6 @@ COPY . .
 
 RUN ENVIRONMENT=$ENVIRONMENT bash scripts/install.sh
 
-RUN bash scripts/get_glove.sh
-
 EXPOSE 8888
 ENTRYPOINT [ "bash" ]
 CMD [ "-c", "jupyter notebook notebooks/ --allow-root --ip=0.0.0.0 --port=8888 --no-browser" ]

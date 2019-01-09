@@ -2,26 +2,28 @@
 
 set -e
 
-RUNID=`date +%Y%m%d`
-DATA_DIR=data/${RUNID}
-BUCKET="s3://predictive-models"
-S3_DATA_DIR=${BUCKET}/${RUNID}
+BUCKET="s3://fwhigh-predictive-models"
+MODEL_ID=`date +%Y%m%d`
+S3_DIR=$BUCKET/models/$MODEL_ID
+DIR=data
 
-mkdir -p DATA_DIR
+TRAINING_ID=$(aws s3 ls $BUCKET/training/ | awk '$1~/PRE/ {print $2}' | sed 's/\///g' | sort -nr | head -n 1)
+
+mkdir -p $DIR
 
 # Get the data. Replace this line with something like:
-#   aws s3 cp $BUCKET/training-data/ $DATA_DIR/
+#   aws s3 cp $BUCKET/training-data/ $DIR/
 # to train on new data that's placed into S3 directly.
-bash scripts/get_training_data.sh ${DATA_DIR}
+bash scripts/get_training_data.sh $BUCKET/training/$TRAINING_ID $DIR
 
 # Train the model
-papermill notebooks/model-training.ipynb ${DATA_DIR}/model-training-${RUNID}.ipynb \
-    -p RUNID ${RUNID} -p DATA_DIR ${DATA_DIR}
+papermill notebooks/model-training.ipynb $DIR/model-training-$MODEL_ID.ipynb -p DATA_DIR $DIR
 
 # Convert the notebook into HTML
-jupyter nbconvert --to html ${DATA_DIR}/model-training-${RUNID}.ipynb
+jupyter nbconvert --to html $DIR/model-training-$MODEL_ID.ipynb
 
 # Push any assets to the cloud
 if [ "$ENVIRONMENT" == "staging" ]; then
-    aws s3 cp --exclude * --include *.ipynb *.html *.pkl ${DATA_DIR}/ S3_DATA_DIR/
+    echo Pushing model to S3
+    aws s3 cp --recursive --exclude "*" --include "*.ipynb" --include "*.html" --include "*.pkl" $DIR/ $S3_DIR/
 fi

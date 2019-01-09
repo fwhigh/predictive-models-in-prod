@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
-set -e
+S3_DIR=$1
+DIR=$2
 
-$DIR=$1
+echo Getting data from $S3_DIR
+echo Writing it to $DIR
 
+aws s3 cp --recursive $S3_DIR/ $DIR/
 cd $DIR
-wget https://archive.ics.uci.edu/ml/machine-learning-databases/00380/YouTube-Spam-Collection-v1.zip
-unzip YouTube-Spam-Collection-v1.zip
+unzip -v *.zip

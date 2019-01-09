@@ -6,14 +6,12 @@ Predictive Models in Production
 
 ### Pro tips
 
-If you ever find yourself with a "no space left on device" error, try
+If you ever find yourself with a "no space left on device" error when building the Docker image, try
 
 ```bash
 docker rm $(docker ps -q -f 'status=exited')
 docker rmi $(docker images -q -f "dangling=true")
 ```
-
-See, eg, https://forums.docker.com/t/no-space-left-on-device-error/10894/14. 
 
 ### Build the base training image
 
@@ -24,16 +22,26 @@ ENVIRONMENT=dev bash scripts/build_training_image.sh
 ### Do interactive model training and data exploration in the Jupyter notebook
 
 ```bash
-ENVIRONMENT=dev bash scripts/run_training_container.sh
+ENVIRONMENT=dev bash scripts/run_training_container.sh -c jupyter notebook notebooks/ --allow-root --ip=0.0.0.0 --port=8888 --no-browser
 ```
 
-Then open [http://localhost:8888](http://localhost:8888).
+Then open [http://localhost:8888](http://localhost:8888) to run Jupyter.
 
 ### Train a model programmatically
 
 ```bash
-ENVIRONMENT=dev RUNID=`date +%Y%m%d` bash scripts/run_training_container.sh scripts/train.sh
+ENVIRONMENT=dev bash scripts/run_training_container.sh scripts/train.sh
 ```
+
+### Pushing the new Docker image to production for the training and API services
+
+If this is your first and only ECR repo, then run
+
+```bash
+bash scripts/push_image.sh $(aws ecr describe-repositories | jq -r '.repositories[0].repositoryUri')
+```
+
+You have have multiple ECR repos you'll have to change the argument so that it points to the one you want to push to. 
 
 ## Resources
 
