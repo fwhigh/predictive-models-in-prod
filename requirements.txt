@@ -2,8 +2,11 @@ gunicorn
 pandas
 numpy
 sklearn
-nltk
+#nltk
 jupyter
 papermill
 awscli
 flask-restplus
+boto3
+botocore
+requests
