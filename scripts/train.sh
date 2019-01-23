@@ -2,7 +2,6 @@
 
 set -e
 
-BUCKET="s3://fwhigh-predictive-models"
 MODEL_ID=`date +%Y%m%d`
 S3_DIR=$BUCKET/models/$MODEL_ID
 DIR=data
