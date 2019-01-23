@@ -30,13 +30,13 @@ Then open [http://localhost:8888](http://localhost:8888) to run Jupyter.
 If you need to enter into the container's shell, do this.
 
 ```bash
-ENVIRONMENT=dev bash scripts/run_training_container.sh -
+ENVIRONMENT=dev BUCKET="s3://fwhigh-predictive-models" bash scripts/run_training_container.sh -
 ```
 
 ### Train a model programmatically
 
 ```bash
-ENVIRONMENT=dev bash scripts/run_training_container.sh scripts/train.sh
+ENVIRONMENT=dev BUCKET="s3://fwhigh-predictive-models" bash scripts/run_training_container.sh scripts/train.sh
 ```
 
 ### Pushing the new Docker image to production for the training and API services
