@@ -3,13 +3,14 @@ try:
 except ImportError:
     pass
 
+import os
 import json
 import logging
 
 from pmip.data import load_from_s3_and_unpickle, get_latest_s3_dateint
 
-model_id = get_latest_s3_dateint(datadir='models', bucket='fwhigh-predictive-models')
-model = load_from_s3_and_unpickle(filename='model.pkl', subdirectory=f'models/{model_id}', bucket='fwhigh-predictive-models')
+model_id = get_latest_s3_dateint(datadir='models', bucket=os.getenv('BUCKET'))
+model = load_from_s3_and_unpickle(filename='model.pkl', subdirectory=f'models/{model_id}', bucket=os.getenv('BUCKET'))
 
 
 def hello(event, context):
