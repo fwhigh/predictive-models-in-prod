@@ -2,7 +2,6 @@
 
 set -e
 
-BUCKET="s3://fwhigh-predictive-models"
 MODEL_ID=$(aws s3 ls ${BUCKET}/models/ | awk '$1~/PRE/ {print $2}' | sed 's/\///g' | sort -nr | head -n 1)
 S3_DIR=$BUCKET/models/$MODEL_ID
 DIR=data
