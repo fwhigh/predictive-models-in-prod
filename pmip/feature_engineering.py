@@ -1,6 +1,5 @@
 import re
 
-import nltk
 from sklearn.base import BaseEstimator, TransformerMixin
 
 
@@ -27,6 +26,7 @@ class NumberSelector(BaseEstimator, TransformerMixin):
 
 
 def Tokenizer(str_input):
+    import nltk
     words = re.sub(r"[^A-Za-z0-9\-]", " ", str_input).lower().split()
     porter_stemmer=nltk.PorterStemmer()
     words = [porter_stemmer.stem(word) for word in words]

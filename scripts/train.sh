@@ -6,7 +6,13 @@ MODEL_ID=`date +%Y%m%d`
 S3_DIR=$BUCKET/models/$MODEL_ID
 DIR=data
 
+echo MODEL_ID $MODEL_ID
+echo S3_DIR $S3_DIR
+echo DIR $DIR
+
 TRAINING_ID=$(aws s3 ls $BUCKET/training/ | awk '$1~/PRE/ {print $2}' | sed 's/\///g' | sort -nr | head -n 1)
+
+echo $TRAINING_ID TRAINING_ID
 
 mkdir -p $DIR
 

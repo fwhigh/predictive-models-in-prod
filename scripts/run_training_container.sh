@@ -8,6 +8,7 @@ if [ -z "$1" ]
         -e AWS_ACCESS_KEY_ID=$(aws --profile default configure get aws_access_key_id) \
         -e AWS_SECRET_ACCESS_KEY=$(aws --profile default configure get aws_secret_access_key) \
         -e ENVIRONMENT=$ENVIRONMENT \
+        -e BUCKET=$BUCKET \
         -t pmip:latest
 else
     docker run -it -p 8888:8888 \
@@ -15,5 +16,6 @@ else
         -e AWS_ACCESS_KEY_ID=$(aws --profile default configure get aws_access_key_id) \
         -e AWS_SECRET_ACCESS_KEY=$(aws --profile default configure get aws_secret_access_key) \
         -e ENVIRONMENT=$ENVIRONMENT \
+        -e BUCKET=$BUCKET \
         -t pmip:latest "$@"
 fi

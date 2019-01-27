@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-pip install -U --upgrade-strategy only-if-needed -e .
+pip install --no-cache-dir -U --upgrade-strategy only-if-needed -e .
