@@ -32,4 +32,7 @@ if [ "$ENVIRONMENT" == "staging" ]; then
     echo Pushing model to S3
     aws s3 cp $DIR/ $S3_DIR/ \
          --recursive --exclude "*" --include "*.ipynb" --include "*.html" --include "*.pkl"
+    
+    # Redeploy Lambda
+    serverless deploy --region $(aws configure get region)
 fi
