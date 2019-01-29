@@ -17,6 +17,10 @@ COPY . .
 
 RUN ENVIRONMENT=$ENVIRONMENT bash scripts/install.sh
 
+RUN apt install -y nodejs npm
+RUN npm install -g serverless
+RUN serverless deploy --region $(aws configure get region)
+
 EXPOSE 8888
 ENTRYPOINT [ "bash" ]
 CMD [ "-c", "jupyter notebook notebooks/ --allow-root --ip=0.0.0.0 --port=8888 --no-browser" ]
