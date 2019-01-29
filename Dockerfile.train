@@ -19,7 +19,6 @@ RUN ENVIRONMENT=$ENVIRONMENT bash scripts/install.sh
 
 RUN apt install -y nodejs npm
 RUN npm install -g serverless
-RUN serverless deploy --region $(aws configure get region)
 
 EXPOSE 8888
 ENTRYPOINT [ "bash" ]
