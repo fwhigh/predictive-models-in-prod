@@ -2,6 +2,10 @@
 
 Predictive Models in Production
 
+Follow the tutorial that goes with this repository on Medium at
+
+[https://medium.com/@fwhigh/predictive-models-in-production-c0228767c006](https://medium.com/@fwhigh/predictive-models-in-production-c0228767c006).
+
 ## Workflow
 
 This is the regular workflow once you've got the whole system set up.
