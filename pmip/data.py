@@ -55,6 +55,21 @@ def load_from_s3(filename=None, subdirectory=None, bucket=None):
     return obj_bytes
 
 
+def load_from_fs_and_unpickle(filename=None, subdirectory=None):
+    if filename is None:
+        raise ValueError("You must specify a filename")
+    if subdirectory is None:
+        raise ValueError("You must specify a subdirectory")
+
+    if not os.path.exists(subdirectory):
+        raise ValueError('Directory {} does not exist'.format(subdirectory))
+
+    with open(os.path.join(subdirectory, filename), 'rb') as pickle_file:
+        obj = pickle.load(pickle_file)
+
+    return obj
+
+
 def load_from_s3_and_unpickle(filename=None, subdirectory=None, bucket=None):
     if filename is None:
         raise ValueError("You must specify a filename")

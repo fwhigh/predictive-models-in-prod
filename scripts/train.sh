@@ -33,8 +33,7 @@ if [ "$ENVIRONMENT" == "staging" ]; then
     aws s3 cp $DIR/ $S3_DIR/ \
          --recursive --exclude "*" --include "*.ipynb" --include "*.html" --include "*.pkl"
     
-    # Redeploy Lambda
-    wget -P /tmp https://download.docker.com/linux/debian/dists/stretch/pool/stable/amd64/docker-ce_18.09.0~3-0~debian-stretch_amd64.deb
-    dpkg -i /tmp/docker-ce_18.09.0~3-0~debian-stretch_amd64.deb
-    serverless deploy --region $([ -z "$AWS_DEFAULT_REGION" ] && aws configure get region || echo "$AWS_DEFAULT_REGION")
+    # Restart API
+    aws elasticbeanstalk restart-app-server --environment-name Pmip-env
+     #--region $([ -z "$AWS_DEFAULT_REGION" ] && aws configure get region || echo "$AWS_DEFAULT_REGION")
 fi

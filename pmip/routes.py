@@ -3,7 +3,7 @@ import os
 from flask import Flask
 from flask_restplus import Resource, Api, fields, abort
 
-from pmip.data import load_from_s3_and_unpickle, get_latest_s3_dateint
+from pmip.data import load_from_s3_and_unpickle, get_latest_s3_dateint, load_from_fs_and_unpickle
 
 DATA_DIR = "data"
 MODEL_FILENAME = "model.pkl"
@@ -15,15 +15,22 @@ def possible_types(value):
     return value
 
 
-latest_model_id = get_latest_s3_dateint(
-    datadir='models',
-    bucket=os.getenv('BUCKET')
-)
-model = load_from_s3_and_unpickle(
-    filename='model.pkl',
-    subdirectory=f'models/{latest_model_id}',
-    bucket=os.getenv('BUCKET')
-)
+if os.getenv('ENVIRONMENT', '') == 'dev':
+    latest_model_id = 'local'
+    model = load_from_fs_and_unpickle(
+        filename='model.pkl',
+        subdirectory='data',
+    )
+elif os.getenv('ENVIRONMENT', '') in ['staging', 'prod']:
+    latest_model_id = get_latest_s3_dateint(
+        datadir='models',
+        bucket=os.getenv('BUCKET')
+    )
+    model = load_from_s3_and_unpickle(
+        filename='model.pkl',
+        subdirectory=f'models/{latest_model_id}',
+        bucket=os.getenv('BUCKET')
+    )
 
 app = Flask(__name__)
 api = Api(app)
@@ -86,7 +93,19 @@ class Predict(Resource):
                 f"Don't recognize type {type}"
             )
 
-        return {'result': result}, 201
+        return {'result': result}, 200
+
+
+@api.route('/model-info')
+class ModelInfo(Resource):
+
+    # @api.marshal_with(request, code=201)
+    def get(self):
+        result = {
+            "model_id": latest_model_id
+        }
+
+        return {'result': result}, 200
 
 
 if __name__ == '__main__':
