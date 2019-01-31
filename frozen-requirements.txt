@@ -1,0 +1,12 @@
+gunicorn==19.9.0
+pandas==0.24.0
+numpy==1.16.0
+sklearn==0.0
+#nltk
+jupyter==1.0.0
+papermill==0.17.1
+awscli==1.16.96
+flask-restplus==0.12.1
+boto3==1.9.86
+botocore==1.12.86
+requests==2.21.0

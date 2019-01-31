@@ -20,6 +20,9 @@ service: pmip-predict # NOTE: update this with your service name
 provider:
   name: aws
   runtime: python3.7
+  environment:
+    BUCKET: ${env:BUCKET}
+
 
 # you can overwrite defaults here
 #  stage: dev
@@ -59,6 +62,12 @@ functions:
     handler: handler.hello
   healthcheck:
     handler: handler.healthcheck
+  model-info:
+    handler: handler.model_info
+    events:
+      - http:
+          path: model-info
+          method: get
   predict:
     handler: handler.predict
     events:

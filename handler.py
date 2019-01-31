@@ -1,5 +1,7 @@
 try:
     import unzip_requirements
+except FileNotFoundError:
+    pass
 except ImportError:
     pass
 
@@ -9,8 +11,24 @@ import logging
 
 from pmip.data import load_from_s3_and_unpickle, get_latest_s3_dateint
 
-model_id = get_latest_s3_dateint(datadir='models', bucket=os.getenv('BUCKET'))
-model = load_from_s3_and_unpickle(filename='model.pkl', subdirectory=f'models/{model_id}', bucket=os.getenv('BUCKET'))
+
+def get_model(model_id=None, model=None):
+    latest_model_id = get_latest_s3_dateint(
+        datadir='models',
+        bucket=os.getenv('BUCKET')
+    )
+
+    if model_id is not None or model is None or model_id != latest_model_id:
+        latest_model = load_from_s3_and_unpickle(
+            filename='model.pkl',
+            subdirectory=f'models/{latest_model_id}',
+            bucket=os.getenv('BUCKET')
+        )
+
+    return latest_model_id, latest_model
+
+
+model_id, model = get_model()
 
 
 def hello(event, context):
@@ -48,14 +66,18 @@ def healthcheck(event, context):
 
     return response
 
-    # Use this code if you don't use the http event with the LAMBDA-PROXY
-    # integration
-    """
-    return {
-        "message": "Go Serverless v1.0! Your function executed successfully!",
-        "event": event
+
+def model_info(event, context):
+    body = {
+        "model_id": model_id
     }
-    """
+
+    response = {
+        "statusCode": 200,
+        "body": json.dumps(body)
+    }
+
+    return response
 
 
 def predict(event, context):

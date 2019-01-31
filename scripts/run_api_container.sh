@@ -12,6 +12,8 @@ if [ -z "$1" ]
         --mount type=bind,source="$(pwd)",target=/usr/src/app \
         -e AWS_ACCESS_KEY_ID=$(aws --profile default configure get aws_access_key_id) \
         -e AWS_SECRET_ACCESS_KEY=$(aws --profile default configure get aws_secret_access_key) \
+        -e AWS_DEFAULT_REGION=$(aws configure get region) \
+        -e BUCKET=$BUCKET \
         -e ENVIRONMENT=$ENVIRONMENT \
         -t pmip_api:latest
 else
@@ -19,6 +21,8 @@ else
         --mount type=bind,source="$(pwd)",target=/usr/src/app \
         -e AWS_ACCESS_KEY_ID=$(aws --profile default configure get aws_access_key_id) \
         -e AWS_SECRET_ACCESS_KEY=$(aws --profile default configure get aws_secret_access_key) \
+        -e AWS_DEFAULT_REGION=$(aws configure get region) \
+        -e BUCKET=$BUCKET \
         -e ENVIRONMENT=$ENVIRONMENT \
         -t pmip_api:latest "$@"
 fi

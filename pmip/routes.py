@@ -3,7 +3,7 @@ import os
 from flask import Flask
 from flask_restplus import Resource, Api, fields, abort
 
-from pmip.data import load_from_fs_and_unpickle
+from pmip.data import load_from_s3_and_unpickle, get_latest_s3_dateint
 
 DATA_DIR = "data"
 MODEL_FILENAME = "model.pkl"
@@ -15,7 +15,15 @@ def possible_types(value):
     return value
 
 
-model = load_from_fs_and_unpickle(os.path.join(DATA_DIR, MODEL_FILENAME))
+latest_model_id = get_latest_s3_dateint(
+    datadir='models',
+    bucket=os.getenv('BUCKET')
+)
+model = load_from_s3_and_unpickle(
+    filename='model.pkl',
+    subdirectory=f'models/{latest_model_id}',
+    bucket=os.getenv('BUCKET')
+)
 
 app = Flask(__name__)
 api = Api(app)

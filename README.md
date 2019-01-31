@@ -30,16 +30,16 @@ Then open [http://localhost:8888](http://localhost:8888) to run Jupyter.
 If you need to enter into the container's shell, do this.
 
 ```bash
-ENVIRONMENT=dev BUCKET="s3://fwhigh-predictive-models" bash scripts/run_training_container.sh -
+ENVIRONMENT=dev BUCKET=fwhigh-predictive-models bash scripts/run_training_container.sh -
 ```
 
 ### Train a model programmatically
 
 ```bash
-ENVIRONMENT=dev BUCKET="s3://fwhigh-predictive-models" bash scripts/run_training_container.sh scripts/train.sh
+ENVIRONMENT=dev BUCKET=fwhigh-predictive-models bash scripts/run_training_container.sh scripts/train.sh
 ```
 
-### Pushing the new Docker image to production for the training and API services
+### Pushing the new Docker image to production for the training and Flask API services
 
 If this is your first or only ECR repo, then run
 
@@ -49,30 +49,44 @@ bash scripts/push_training_image.sh $(aws ecr describe-repositories | jq -r '.re
 
 You have have multiple ECR repos you'll have to change the argument so that it points to the one you want to push to. 
 
-#### Build the API image
+#### Build the Flask API image
 
 ```bash
 bash scripts/build_api_image.sh
 ```
 
-#### Run the API locally in debugging mode
+#### Run the Flask API locally in debugging mode
 
 ```bash
 ENVIRONMENT=dev bash scripts/run_api_container.sh "python -m pmip.routes"
 ```
 
-Run the API locally.
+Run the Flask API locally.
 
 ```bash
-ENVIRONMENT=dev bash scripts/run_api_container.sh
+ENVIRONMENT=dev BUCKET=fwhigh-predictive-models bash scripts/run_api_container.sh
 ```
 
-Drop into the container.
+Drop into the Flask API container.
 
 ```bash
 ENVIRONMENT=dev bash scripts/run_api_container.sh -
 ```
 
+### Push the Lambda API to Lambda
+
+```bash
+BUCKET=fwhigh-predictive-models serverless deploy --region $([ -z "$AWS_DEFAULT_REGION" ] && aws configure get region || echo "$AWS_DEFAULT_REGION")
+``` 
+
+Run it
+
+```bash
+curl -X GET https://lrgbpftjy3.execute-api.us-west-1.amazonaws.com/dev/healthcheck
+curl -X GET https://lrgbpftjy3.execute-api.us-west-1.amazonaws.com/dev/model-info
+curl -X POST -d '{"comments":["Check out this free stuff","I take issue with your characterization"]}' \
+    https://lrgbpftjy3.execute-api.us-west-1.amazonaws.com/dev/predict?flavor=class
+```
 
 ## Resources
 

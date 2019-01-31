@@ -8,4 +8,4 @@ echo Writing it to $DIR
 
 aws s3 cp --recursive $S3_DIR/ $DIR/
 cd $DIR
-unzip *.zip
+unzip -f *.zip
