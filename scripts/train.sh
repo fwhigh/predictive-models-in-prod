@@ -34,6 +34,6 @@ if [ "$ENVIRONMENT" == "staging" ] || [ "$ENVIRONMENT" == "prod" ]; then
          --recursive --exclude "*" --include "*.ipynb" --include "*.html" --include "*.pkl"
     
     # Restart API
-    aws elasticbeanstalk restart-app-server --environment-name Pmip-env
-     #--region $([ -z "$AWS_DEFAULT_REGION" ] && aws configure get region || echo "$AWS_DEFAULT_REGION")
+    aws --region $([ -z "$AWS_DEFAULT_REGION" ] && aws configure get region || echo "$AWS_DEFAULT_REGION") \
+        elasticbeanstalk restart-app-server --environment-name Pmip-env
 fi
