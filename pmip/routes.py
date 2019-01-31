@@ -23,7 +23,7 @@ if os.getenv('ENVIRONMENT', '') == 'dev':
     )
 elif os.getenv('ENVIRONMENT', '') in ['staging', 'prod']:
     latest_model_id = get_latest_s3_dateint(
-        datadir='models',
+        datadir=f'models/{os.getenv("ENVIRONMENT")}',
         bucket=os.getenv('BUCKET')
     )
     model = load_from_s3_and_unpickle(

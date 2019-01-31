@@ -2,6 +2,17 @@
 
 Predictive Models in Production
 
+## Workflow
+
+This is the regular workflow once you've got the whole system set up.
+
+1. Edit code and commit to Github.
+1. Build the Docker image locally.
+1. Push the Docker image to the AWS ECR repository (command below).
+1. Manually upload the latest model to AWS S3 s3://<your-S3-bucket>/models/staging/YYYYMMDD/, where YYYYMMDD is today.
+1. Deploy the AWS ElasticBeanstalk API with `eb deploy`. This should pick up the S3 model you just uploaded.
+1. Run the AWS Batch training job. This will make a new model (again) and restart the EB application (again).
+
 ## Local dev
 
 ### Pro tips
@@ -30,13 +41,13 @@ Then open [http://localhost:8888](http://localhost:8888) to run Jupyter.
 If you need to enter into the container's shell, do this.
 
 ```bash
-ENVIRONMENT=dev BUCKET=fwhigh-predictive-models bash scripts/run_training_container.sh -
+ENVIRONMENT=dev BUCKET=$BUCKET bash scripts/run_training_container.sh -
 ```
 
 ### Train a model programmatically
 
 ```bash
-ENVIRONMENT=dev BUCKET=fwhigh-predictive-models bash scripts/run_training_container.sh scripts/train.sh
+ENVIRONMENT=dev BUCKET=$BUCKET bash scripts/run_training_container.sh scripts/train.sh
 ```
 
 ### Pushing the new Docker image to production for the training and Flask API services
@@ -64,7 +75,7 @@ ENVIRONMENT=dev bash scripts/run_api_container.sh "python -m pmip.routes"
 Run the Flask API locally.
 
 ```bash
-ENVIRONMENT=dev BUCKET=fwhigh-predictive-models bash scripts/run_api_container.sh
+ENVIRONMENT=dev BUCKET=$BUCKET bash scripts/run_api_container.sh
 ```
 
 Drop into the Flask API container.
@@ -76,7 +87,7 @@ ENVIRONMENT=dev bash scripts/run_api_container.sh -
 ### Push the Lambda API to Lambda
 
 ```bash
-BUCKET=fwhigh-predictive-models serverless deploy --region $([ -z "$AWS_DEFAULT_REGION" ] && aws configure get region || echo "$AWS_DEFAULT_REGION")
+BUCKET=$BUCKET serverless deploy --region $([ -z "$AWS_DEFAULT_REGION" ] && aws configure get region || echo "$AWS_DEFAULT_REGION")
 ``` 
 
 Run it
