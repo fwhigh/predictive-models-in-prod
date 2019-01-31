@@ -24,6 +24,12 @@ docker rm $(docker ps -q -f 'status=exited')
 docker rmi $(docker images -q -f "dangling=true")
 ```
 
+I recommend setting `BUCKET` in `~/.profile`.
+
+```bash
+export BUCKET=<your-S3-bucket>
+```
+
 ### Build the base training image
 
 ```bash
@@ -66,22 +72,42 @@ You have have multiple ECR repos you'll have to change the argument so that it p
 bash scripts/build_api_image.sh
 ```
 
-#### Run the Flask API locally in debugging mode
+#### Run the Flask API locally 
+
+Run the Flask API locally outside of the Docker container.
 
 ```bash
 ENVIRONMENT=dev bash scripts/run_api_container.sh "python -m pmip.routes"
 ```
 
-Run the Flask API locally.
+Then open [http://localhost:8000](http://localhost:8000) to view the Swagger documentation and issue API calls.
+
+Run the Flask API locally inside your Docker container.
 
 ```bash
 ENVIRONMENT=dev BUCKET=$BUCKET bash scripts/run_api_container.sh
 ```
 
+Then open [http://localhost:8000](http://localhost:8000) to view the Swagger documentation and issue API calls.
+
 Drop into the Flask API container.
 
 ```bash
 ENVIRONMENT=dev bash scripts/run_api_container.sh -
+```
+
+### Deploy the ElasticBeanstalk 
+
+If this is the first time, run
+
+```bash
+eb init
+```
+
+To deploy run
+
+```bash
+eb deploy
 ```
 
 ### Push the Lambda API to Lambda
@@ -90,7 +116,7 @@ ENVIRONMENT=dev bash scripts/run_api_container.sh -
 BUCKET=$BUCKET serverless deploy --region $([ -z "$AWS_DEFAULT_REGION" ] && aws configure get region || echo "$AWS_DEFAULT_REGION")
 ``` 
 
-Run it
+Issue API calls.
 
 ```bash
 curl -X GET https://lrgbpftjy3.execute-api.us-west-1.amazonaws.com/dev/healthcheck
