@@ -28,7 +28,7 @@ elif os.getenv('ENVIRONMENT', '') in ['staging', 'prod']:
     )
     model = load_from_s3_and_unpickle(
         filename='model.pkl',
-        subdirectory=f'models/{latest_model_id}',
+        subdirectory=f'models/{os.getenv("ENVIRONMENT")}/{latest_model_id}',
         bucket=os.getenv('BUCKET')
     )
 
@@ -99,10 +99,10 @@ class Predict(Resource):
 @api.route('/model-info')
 class ModelInfo(Resource):
 
-    # @api.marshal_with(request, code=201)
     def get(self):
         result = {
-            "model_id": latest_model_id
+            "model_id": latest_model_id,
+            "ENVIRONMENT": os.getenv('ENVIRONMENT', '')
         }
 
         return {'result': result}, 200

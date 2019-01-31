@@ -3,7 +3,7 @@
 set -e
 
 MODEL_ID=`date +%Y%m%d`
-S3_DIR=s3://$BUCKET/models/$MODEL_ID
+S3_DIR=s3://$BUCKET/models/$ENVIRONMENT/$MODEL_ID
 DIR=data
 
 echo MODEL_ID $MODEL_ID
@@ -28,7 +28,7 @@ papermill notebooks/model-training.ipynb $DIR/model-training-$MODEL_ID.ipynb -p 
 jupyter nbconvert --to html $DIR/model-training-$MODEL_ID.ipynb
 
 # Push any assets to the cloud
-if [ "$ENVIRONMENT" == "staging" ]; then
+if [ "$ENVIRONMENT" == "staging" ] || [ "$ENVIRONMENT" == "prod" ]; then
     echo Pushing model to S3
     aws s3 cp $DIR/ $S3_DIR/ \
          --recursive --exclude "*" --include "*.ipynb" --include "*.html" --include "*.pkl"
