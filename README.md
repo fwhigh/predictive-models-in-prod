@@ -6,6 +6,13 @@ Follow the tutorial that goes with this repository on Medium at
 
 [https://medium.com/@fwhigh/predictive-models-in-production-c0228767c006](https://medium.com/@fwhigh/predictive-models-in-production-c0228767c006).
 
+## Requirements
+
+* AWS CLI (`brew install awscli`)
+* AWS EB CLI (`brew install awsebcli`)
+* Docker
+* An AWS account if you're going to deploy things there
+
 ## Workflow
 
 This is the regular workflow once you've got the whole system set up.
@@ -68,7 +75,7 @@ If this is your first or only ECR repo, then run
 bash scripts/push_training_image.sh $(aws ecr describe-repositories | jq -r '.repositories[0].repositoryUri')
 ```
 
-You have have multiple ECR repos you'll have to change the argument so that it points to the one you want to push to. 
+If you have have multiple ECR repos you'll have to change the argument so that it points to the one you want to push to. 
 
 #### Build the Flask API image
 
@@ -81,7 +88,7 @@ bash scripts/build_api_image.sh
 Run the Flask API locally outside of the Docker container.
 
 ```bash
-ENVIRONMENT=dev bash scripts/run_api_container.sh "python -m pmip.routes"
+ENVIRONMENT=dev BUCKET=$BUCKET bash scripts/run_api_container.sh "python -m pmip.routes"
 ```
 
 Then open [http://localhost:8000](http://localhost:8000) to view the Swagger documentation and issue API calls.
@@ -97,7 +104,7 @@ Then open [http://localhost:8000](http://localhost:8000) to view the Swagger doc
 Drop into the Flask API container.
 
 ```bash
-ENVIRONMENT=dev bash scripts/run_api_container.sh -
+ENVIRONMENT=dev BUCKET=$BUCKET bash scripts/run_api_container.sh -
 ```
 
 ### Deploy the ElasticBeanstalk 
